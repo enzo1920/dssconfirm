@@ -90,7 +90,7 @@ func WeatherGET(serv_url string) {
 func main() {
 	//login()
 
-	//http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=48dc6dc3b49c57b1eb4be6a6ba245009
+	//http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=
 	readcfg := readconfig.Config_reader("./readconfig/dss.conf")
 	//server_url :="http://"+readcfg.Host+":"+strconv.Itoa(readcfg.Port)
 	server_url :="http://api.openweathermap.org/data/2.5/weather?q="+readconfig.City+","+readconfig.CCode+"&appid="+readconfig.token
