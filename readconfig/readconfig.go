@@ -8,13 +8,12 @@ import (
 )
 
 type Configuration struct {
-		Host  string 
-		token  string
+		Host  string
+		Token  string
 		City string
 		CCode string
 		Port  int
-
-	log_file_name string
+		log_file_name string
 }
 
 //func config_reader(cfg_file string)([]string){
