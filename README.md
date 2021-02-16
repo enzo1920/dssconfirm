@@ -82,7 +82,8 @@ import "C"в пакете main
 ```
 go install -buildmode=shared -linkshared std
 cd C_lib/
-go build -buildmode=c-shared -o kryptoesim.a kryptoesim.go
+go build  -buildmode=c-shared -o kryptoesim.a kryptoesim.go
+
 
 ```
 
