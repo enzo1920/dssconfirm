@@ -1,4 +1,4 @@
-# Programm for dss confirmation
+# DSS confirmation
 
 ## Последовательность вызовов
  
@@ -81,7 +81,7 @@ http://blog.ralch.com/tutorial/golang-sharing-libraries/
 import "C"в пакете main
 ```
 go install -buildmode=shared -linkshared std
-cd c_lib/
+cd C_lib/
 go build -buildmode=c-shared -o kryptoesim.a kryptoesim.go
 
 ```
