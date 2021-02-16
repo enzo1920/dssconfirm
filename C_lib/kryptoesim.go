@@ -1,12 +1,11 @@
 package main
 
+import "C"
+
 import (
   "fmt"
-  "os"
-  "flag"
   "strings"
   "net/http"
-  "time"
   "encoding/json"
 )
 
@@ -49,7 +48,7 @@ type ResponseFinal struct {
 	IsError     bool   `json:"IsError"`
 }
 
-//export CryptoAuth
+//export CriptoAuth
 func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
   method := "POST"
 
