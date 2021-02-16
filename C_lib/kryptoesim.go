@@ -185,7 +185,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
 
 
 func main() {
-
+/*
 ///URLS
 url_auth := "https://"
 url_req := "https://"
@@ -213,5 +213,5 @@ client_id := "client_id"
        fmt.Printf("i've got final: %v , error %v \n", final, errf)
   }
 
-
+*/
 }
