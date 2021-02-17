@@ -78,6 +78,8 @@ make linux
 
 ## Создание статической библиотеки для C
 http://blog.ralch.com/tutorial/golang-sharing-libraries/
+
+
 import "C"в пакете main
 ```
 go install -buildmode=shared -linkshared std
