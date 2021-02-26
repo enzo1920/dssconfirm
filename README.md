@@ -80,6 +80,7 @@ make linux
 в файле /C_test/runner.c правим пути и команду 
 ```
 gcc -0 runner runner.c
+./runner
 ```
 
 
