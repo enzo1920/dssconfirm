@@ -76,22 +76,15 @@ make linux
 ./dssconfirm -m MSISDN
 ```
 
-## Создание статической библиотеки для C
-http://blog.ralch.com/tutorial/golang-sharing-libraries/
-
-
-import "C"в пакете main
+## Вызов из C
+в файле /C_test/runner.c правим пути и команду 
 ```
-go install -buildmode=shared -linkshared std
-cd C_lib/
-go build  -buildmode=c-shared -o kryptoesim.a kryptoesim.go
-
-
+gcc -0 runner runner.c
 ```
 
 
 ## Log 
-
+Лог выполнения программы выводится на консоль
 
 
 ## Authors
