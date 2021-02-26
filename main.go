@@ -14,7 +14,7 @@ import (
 //структура для получения первоночального токена
 type Auth struct{
      AToken   string `json:"access_token"`
-     Exp_in   uint64 `json:"expires_in"`
+     Exp_in   int `json:"expires_in"`
      TType    string `json:"token_type"`
 
 }
@@ -71,7 +71,14 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
     fmt.Println(err)
     return
   }
-  defer res.Body.Close()
+ 
+/*  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(string(body))
+*/
 
   auth_struct := &Auth{}
   err = json.NewDecoder(res.Body).Decode(auth_struct)
@@ -80,6 +87,11 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
   }
   fmt.Printf("token: %s  \n",auth_struct.AToken)
   authtoken = auth_struct.AToken
+
+
+ defer res.Body.Close()
+
+
   return authtoken
 }
 
@@ -186,12 +198,16 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
 
 func main() {
 
+//exit code 
+  exit_code := 0
 ///URLS
 url_auth := "https://"
 url_req := "https://"
-client_id := "client_id"
+client_id := "client"
 //аргументы для запуска
   var msisdn string
+  var final bool
+  var errf bool
 //  var refid string
 //  var iserr bool
 // flag declaration
@@ -201,16 +217,30 @@ client_id := "client_id"
   if len(os.Args) == 1 {
      fmt.Printf("Usage: \n")
      fmt.Printf("./dssconfirm -m msisdn \n")
-     os.Exit(0)
+     exit_code = -1 
+     os.Exit(exit_code)
   } else{
        token := CriptoAuth(msisdn,url_auth,client_id)
+       if len(token)==0{
+          fmt.Printf("Token len: %v, token: %v \n", len(token), token)
+          exit_code = 1 
+          os.Exit(exit_code)
+       }
        // подождем 3 секунды перед запросом
-       time.Sleep(5 * time.Second)
+       time.Sleep(3 * time.Second)
        refid, err := StartReq(token,url_req,client_id)
        fmt.Printf("i've got ref: %v, error %v \n", refid, err)
-       time.Sleep(5 * time.Second)
-       final, errf := ResponseCheck(token,url_req,refid)
-       fmt.Printf("i've got final: %v , error %v \n", final, errf)
+       time.Sleep(3 * time.Second)
+       for {
+            time.Sleep(2 * time.Second)
+            final, errf = ResponseCheck(token,url_req,refid)
+            fmt.Printf("i've got Final: %v , Error %v \n", final, errf)
+            if final==true{
+               break
+               os.Exit(exit_code)
+            }
+       }
+       //fmt.Printf("i've got final: %v , error %v \n", final, errf)
   }
 
 
