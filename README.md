@@ -63,7 +63,7 @@ ResponseCheck(authtoken string, url string, refid string)
 IsError = false, IsFianl = true.
 ```
 
-## Compile
+## 4. Компиляция
 Используется Makefile
 ```
 make windows
@@ -71,12 +71,12 @@ or
 make linux 
 ```
 
-## Запуск
+## 5. Запуск
 ```
 ./dssconfirm -m MSISDN
 ```
 
-## Вызов из C
+## 6. Вызов из C
 в файле /C_test/runner.c правим пути и команду 
 ```
 gcc -0 runner runner.c
@@ -84,7 +84,7 @@ gcc -0 runner runner.c
 ```
 
 
-## Log 
+## 7. Log 
 Лог выполнения программы выводится на консоль
 
 
