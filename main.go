@@ -67,6 +67,11 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
   req.Header.Add("Cookie", "ASP.NET_SessionId=rojqot4xjumpq3afanivohwm")
 
   res, err := client.Do(req)
+	
+  if resp != nil {
+        defer resp.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -89,7 +94,7 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
   authtoken = auth_struct.AToken
 
 
- defer res.Body.Close()
+ //defer res.Body.Close()
 
 
   return authtoken
@@ -105,7 +110,11 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
   client := &http.Client {
   }
   req, err := http.NewRequest(method, url, payload)
-
+	
+  if resp != nil {
+        defer resp.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -123,7 +132,7 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
   }
 
 
-  defer res.Body.Close()
+//  defer res.Body.Close()
 
 /*  body, err := ioutil.ReadAll(res.Body)
   if err != nil {
@@ -159,7 +168,11 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   client := &http.Client {
   }
   req, err := http.NewRequest(method, url, payload)
-
+	
+  if resp != nil {
+        defer resp.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -182,7 +195,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   fmt.Println(string(body))
 */
 
-  defer res.Body.Close()
+  //defer res.Body.Close()
 
   responsefinal_struct := &Response{}
   err = json.NewDecoder(res.Body).Decode(responsefinal_struct)
