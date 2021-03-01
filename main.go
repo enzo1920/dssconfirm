@@ -68,8 +68,8 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
 
   res, err := client.Do(req)
 	
-  if resp != nil {
-        defer resp.Body.Close()
+  if res != nil {
+        defer res.Body.Close()
   }
 	
   if err != nil {
@@ -111,8 +111,8 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
   }
   req, err := http.NewRequest(method, url, payload)
 	
-  if resp != nil {
-        defer resp.Body.Close()
+  if req != nil {
+        defer req.Body.Close()
   }
 	
   if err != nil {
@@ -126,6 +126,11 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
 //  fmt.Println(req)
 
   res, err := client.Do(req)
+	
+  if res != nil {
+        defer res.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -169,8 +174,8 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   }
   req, err := http.NewRequest(method, url, payload)
 	
-  if resp != nil {
-        defer resp.Body.Close()
+  if req != nil {
+        defer req.Body.Close()
   }
 	
   if err != nil {
@@ -182,6 +187,10 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   req.Header.Add("Cookie", "ASP.NET_SessionId=aql2nw3cfewfewrx5bu4zaqr")
 
   res, err := client.Do(req)
+	
+  if res != nil {
+        defer res.Body.Close()
+  }
   if err != nil {
     fmt.Println(err)
     return
