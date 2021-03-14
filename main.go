@@ -102,10 +102,13 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
 
 //export StartReq
 func StartReq(authtoken string, url string, client_id string)(refid string, iserr bool) {
-
+  t :=time.Now()
   method := "POST"
 
-  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:skbkonturss",`+""+`"ClientId" : "`+client_id +`" ,`+""+`"ConfirmationScope" : "checkprofile"`+""+`}`)
+  //payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:skbkonturss",`+""+`"ClientId" : "`+client_id +`" ,`+""+`"ConfirmationScope" : "checkprofile"`+""+`}`)
+  
+  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:skbkonturss",`+""+`"ClientId" : "`+client_id +`",`+""+`"ConfirmationScope" : "checkprofile",`+""+`"ConfirmationParams": {`+""+`"CpTime":"`+t.Format("17.01.2018 17:54:02") +`"`+""+`}`+""+``+""+` }`)
+  
   //fmt.Printf("payload: %s  \n", payload)
   client := &http.Client {
   }
@@ -225,7 +228,7 @@ func main() {
 ///URLS
 url_auth := "https://"
 url_req := "https://"
-client_id := "client"
+client_id := "client1111"
 //аргументы для запуска
   var msisdn string
   var final bool
