@@ -233,12 +233,12 @@ client_id := "client"
 //  var refid string
 //  var iserr bool
 // flag declaration
-  flag.StringVar(&msisdn,"m","","Specify msisdn.")
+  flag.StringVar(&msisdn,"m","","Specify iccid.")
 
   flag.Parse()
   if len(os.Args) == 1 {
      fmt.Printf("Usage: \n")
-     fmt.Printf("./dssconfirm -m msisdn \n")
+     fmt.Printf("./dssconfirm -m iccid \n")
      exit_code = -1 
      os.Exit(exit_code)
   } else{
