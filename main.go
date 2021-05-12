@@ -67,6 +67,11 @@ func CriptoAuth (username string,url string, client_id string)(authtoken string)
   req.Header.Add("Cookie", "ASP.NET_SessionId=rojqot4xjumpq3afanivohwm")
 
   res, err := client.Do(req)
+	
+  if res != nil {
+        defer res.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -89,7 +94,11 @@ func CriptoAuth (username string,url string, client_id string)(authtoken string)
   authtoken = auth_struct.AToken
 
 
+<<<<<<< HEAD
  defer res.Body.Close()
+=======
+ //defer res.Body.Close()
+>>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
 
 
   return authtoken
@@ -105,7 +114,11 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
   client := &http.Client {
   }
   req, err := http.NewRequest(method, url, payload)
-
+	
+  if req != nil {
+        defer req.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -117,13 +130,18 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
 //  fmt.Println(req)
 
   res, err := client.Do(req)
+	
+  if res != nil {
+        defer res.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
   }
 
 
-  defer res.Body.Close()
+//  defer res.Body.Close()
 
 /*  body, err := ioutil.ReadAll(res.Body)
   if err != nil {
@@ -159,7 +177,11 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   client := &http.Client {
   }
   req, err := http.NewRequest(method, url, payload)
-
+	
+  if req != nil {
+        defer req.Body.Close()
+  }
+	
   if err != nil {
     fmt.Println(err)
     return
@@ -169,6 +191,10 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   req.Header.Add("Cookie", "ASP.NET_SessionId=aql2nw3cfewfewrx5bu4zaqr")
 
   res, err := client.Do(req)
+	
+  if res != nil {
+        defer res.Body.Close()
+  }
   if err != nil {
     fmt.Println(err)
     return
@@ -182,7 +208,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   fmt.Println(string(body))
 */
 
-  defer res.Body.Close()
+  //defer res.Body.Close()
 
   responsefinal_struct := &Response{}
   err = json.NewDecoder(res.Body).Decode(responsefinal_struct)
@@ -201,9 +227,10 @@ func main() {
 //exit code 
   exit_code := 0
 ///URLS
+<<<<<<< HEAD
 //url_auth := "https://stenddss.cryptopro.ru/skbkonturidp/oauth/token"
 //url_req := "https://stenddss.cryptopro.ru/skbkonturidp/confirmation"
-//client_id := "kriptonitclient"
+//client_id := ""
 
 url_auth := "https://stenddss.cryptopro.ru/a1idp/oauth/token"
 url_req := "https://stenddss.cryptopro.ru/a1idp/confirmation"
@@ -213,6 +240,13 @@ client_id := ""
 
 //аргументы для запуска
   var username string
+=======
+url_auth := "https://"
+url_req := "https://"
+client_id := "client"
+//аргументы для запуска
+  var msisdn string
+>>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
   var final bool
   var errf bool
 //  var refid string
@@ -223,11 +257,19 @@ client_id := ""
   flag.Parse()
   if len(os.Args) == 1 {
      fmt.Printf("Usage: \n")
+<<<<<<< HEAD
      fmt.Printf("./dssconfirm -m profile_name \n")
      exit_code = -1 
      os.Exit(exit_code)
   } else{
        token := CriptoAuth(username,url_auth,client_id)
+=======
+     fmt.Printf("./dssconfirm -m msisdn \n")
+     exit_code = -1 
+     os.Exit(exit_code)
+  } else{
+       token := CriptoAuth(msisdn,url_auth,client_id)
+>>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
        if len(token)==0{
           fmt.Printf("Token len: %v, token: %v \n", len(token), token)
           exit_code = 1 
