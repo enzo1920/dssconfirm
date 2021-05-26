@@ -2,6 +2,7 @@ package main
 
 import (
   "fmt"
+  "log"
   "os"
   "flag"
   "strings"
@@ -10,11 +11,22 @@ import (
   "encoding/json"
 )
 
+//структура конфига 
+type Configuration struct {
+	Url_auth string `json:"url_auth"`
+        Url_req string  `json:"url_req"`
+        Client_id string  `json:"client_id"`
+	Log_file_name string  `json:"log_file_name"`
+}
+
+
+
+
 //  "io/ioutil"
 //структура для получения первоночального токена
 type Auth struct{
      AToken   string `json:"access_token"`
-     Exp_in   uint64 `json:"expires_in"`
+     Exp_in   int `json:"expires_in"`
      TType    string `json:"token_type"`
 
 }
@@ -50,10 +62,10 @@ type ResponseFinal struct {
 }
 
 //export CryptoAuth
-func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
+func CriptoAuth (username string,url string, client_id string)(authtoken string) {
   method := "POST"
 
-  payload := strings.NewReader("grant_type=password&username="+phone+"&client_id="+client_id+"&resource=urn%3Acryptopro%3Adss%3Asignserver%3Askbkonturss&password=")
+  payload := strings.NewReader("grant_type=password&username="+username+"&client_id="+client_id+"&resource=urn%3Acryptopro%3Adss%3Asignserver%3Aa1ss&password=")
 
   client := &http.Client {
   }
@@ -71,15 +83,27 @@ func CriptoAuth (phone string,url string, client_id string)(authtoken string) {
     fmt.Println(err)
     return
   }
-  defer res.Body.Close()
+ 
+/*  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(string(body))
+*/
 
   auth_struct := &Auth{}
   err = json.NewDecoder(res.Body).Decode(auth_struct)
   if err != nil {
-    fmt.Println(err)
+    log.Println(err)
   }
-  fmt.Printf("token: %s  \n",auth_struct.AToken)
+  log.Printf("token: %s  \n",auth_struct.AToken)
   authtoken = auth_struct.AToken
+
+
+ defer res.Body.Close()
+
+
   return authtoken
 }
 
@@ -88,14 +112,14 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
 
   method := "POST"
 
-  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:skbkonturss",`+""+`"ClientId" : "`+client_id +`" ,`+""+`"ConfirmationScope" : "checkprofile"`+""+`}`)
+  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:a1ss",`+""+`"ClientId" : "`+client_id +`" ,`+""+`"ConfirmationScope" : "checkprofile"`+""+`}`)
   //fmt.Printf("payload: %s  \n", payload)
   client := &http.Client {
   }
   req, err := http.NewRequest(method, url, payload)
 
   if err != nil {
-    fmt.Println(err)
+    log.Println(err)
     return
   }
   req.Header.Add("Content-Type", "application/json")
@@ -106,7 +130,7 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
 
   res, err := client.Do(req)
   if err != nil {
-    fmt.Println(err)
+    log.Println(err)
     return
   }
 
@@ -126,9 +150,9 @@ func StartReq(authtoken string, url string, client_id string)(refid string, iser
   if err != nil {
     fmt.Println(err)
   }
-  fmt.Println(response_struct)
-  fmt.Println(response_struct.Challenge.ContextData.RefID)
-  fmt.Println(response_struct.IsError)
+  log.Println("resp struct:", response_struct)
+  log.Println("REFID: ",response_struct.Challenge.ContextData.RefID)
+  log.Println("IsError refid: ",response_struct.IsError)
   refid = response_struct.Challenge.ContextData.RefID
   iserr = response_struct.IsError
   return refid,iserr
@@ -140,7 +164,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
 
   method := "POST"
 
-  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:skbkonturss",`+""+`"ChallengeResponse" : {`+""+`
+  payload := strings.NewReader(`{`+""+`"Resource" : "urn:cryptopro:dss:signserver:a1ss",`+""+`"ChallengeResponse" : {`+""+`
     "TextChallengeResponse" : [ {`+""+`"RefId" :"`+""+refid+""+`"} ]`+" "+`}`+" "+`}`)
   
 //  fmt.Printf("payload: %s  \n", payload)
@@ -149,7 +173,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   req, err := http.NewRequest(method, url, payload)
 
   if err != nil {
-    fmt.Println(err)
+    log.Println("err: ",err)
     return
   }
   req.Header.Add("Content-Type", "application/json")
@@ -158,7 +182,7 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
 
   res, err := client.Do(req)
   if err != nil {
-    fmt.Println(err)
+    log.Println("err:",err)
     return
   }
 
@@ -175,42 +199,123 @@ func ResponseCheck(authtoken string, url string, refid string)(isfinal bool, ise
   responsefinal_struct := &Response{}
   err = json.NewDecoder(res.Body).Decode(responsefinal_struct)
   if err != nil {
-    fmt.Println(err)
+    log.Println("err:",err)
   }
-  fmt.Println(responsefinal_struct.IsFinal)
+  log.Println("is final: ",responsefinal_struct.IsFinal)
   isfinal = responsefinal_struct.IsFinal
   iserr = responsefinal_struct.IsError
   return isfinal,iserr
 }
 
 
+
+
+//func config_reader(cfg_file string)([]string){
+func Config_reader(cfg_file string) Configuration {
+
+	//c := flag.String("c", cfg_file, "Specify the configuration file.")
+	//flag.Parse()
+	file, err := os.Open(cfg_file)
+	if err != nil {
+		fmt.Println("can't open config file: ", err)
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	Config := Configuration{}
+	err = decoder.Decode(&Config)
+	if err != nil {
+		fmt.Println("can't decode config JSON: ", err)
+	}
+
+	return Config
+}
+
+
 func main() {
 
-///URLS
-url_auth := "https://"
-url_req := "https://"
-client_id := "client_id"
+//exit code 
+  exit_code := 0
 //аргументы для запуска
-  var msisdn string
-//  var refid string
-//  var iserr bool
-// flag declaration
-  flag.StringVar(&msisdn,"m","","Specify msisdn.")
+  var username string
+  var final bool
+  var errf bool
+
+
+//************************* read config ******************************************//
+   cfg := Config_reader("../config/dss.conf")
+
+
+
+//*********************** URLS from config fiel **********************************//
+   url_auth := cfg.Url_auth 
+   url_req := cfg.Url_req
+   client_id := cfg.Client_id
+   //log file create 
+   //logging
+   log_dir := "./log"
+   if _, err := os.Stat(log_dir); os.IsNotExist(err) {
+		os.Mkdir(log_dir, 0644)
+   }
+   file, err := os.OpenFile("./log/"+cfg.Log_file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+   if err != nil {
+		log.Fatal(err)
+   }
+   defer file.Close()
+   log.SetOutput(file)
+   log.Println("Logging to a file dssconfirm!")
+
+
+// start programm dss
+
+  flag.StringVar(&username,"m","","Specify profile name.")
 
   flag.Parse()
   if len(os.Args) == 1 {
      fmt.Printf("Usage: \n")
-     fmt.Printf("./dssconfirm -m msisdn \n")
-     os.Exit(0)
+     fmt.Printf("./dssconfirm -m profile_name \n")
+     exit_code = -1 
+     os.Exit(exit_code)
   } else{
-       token := CriptoAuth(msisdn,url_auth,client_id)
+//step 1 get token
+
+       token := CriptoAuth(username,url_auth,client_id)
+       if len(token)==0{
+          log.Printf(" step1. Token len: %v, token: %v \n", len(token), token)
+          exit_code = 1 
+          os.Exit(exit_code)
+       }
        // подождем 3 секунды перед запросом
-       time.Sleep(5 * time.Second)
+       time.Sleep(3 * time.Second)
+//step 2 get refid
+
        refid, err := StartReq(token,url_req,client_id)
-       fmt.Printf("i've got ref: %v, error %v \n", refid, err)
-       time.Sleep(5 * time.Second)
-       final, errf := ResponseCheck(token,url_req,refid)
-       fmt.Printf("i've got final: %v , error %v \n", final, errf)
+       if err ==true{
+          log.Printf("step2. i've got error=true in startreq: %v, token: %v \n", len(token), token)
+          exit_code = 2 
+          os.Exit(exit_code)
+       }
+       log.Printf("step2. I've got ref: %v, error %v \n", refid, err)
+       time.Sleep(3 * time.Second)
+       //counter если достигли 30 выходим
+       counter := 0
+       for {
+            time.Sleep(2 * time.Second)
+//step 3 response check
+
+            final, errf = ResponseCheck(token,url_req,refid)
+            log.Printf("i've got Final: %v , Error %v \n", final, errf)
+            if final==true &&errf == false{
+               break
+               os.Exit(exit_code)
+            }
+            if counter == 30{
+               exit_code = 3 
+               break
+               os.Exit(exit_code)
+            }
+            counter++
+       }
+       //fmt.Printf("i've got final: %v , error %v \n", final, errf)
   }
 
 
