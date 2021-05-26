@@ -115,15 +115,8 @@ func CriptoAuth (username string,url string, client_id string)(authtoken string)
   authtoken = auth_struct.AToken
 
 
-<<<<<<< HEAD
- defer res.Body.Close()
-=======
-<<<<<<< HEAD
- defer res.Body.Close()
-=======
+
  //defer res.Body.Close()
->>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
->>>>>>> d197204f645f71773d6cc823280f3a0157d2c1f5
 
 
   return authtoken
@@ -274,7 +267,7 @@ func main() {
 
 //exit code 
   exit_code := 0
-<<<<<<< HEAD
+
 //аргументы для запуска
   var username string
   var final bool
@@ -282,7 +275,7 @@ func main() {
 
 
 //************************* read config ******************************************//
-   cfg := Config_reader("../config/dss.conf")
+   cfg := Config_reader("/Project/dssconfirm/config/dss.conf")
 
 
 
@@ -292,11 +285,11 @@ func main() {
    client_id := cfg.Client_id
    //log file create 
    //logging
-   log_dir := "./log"
+   log_dir := "/Project/dssconfirm/bin/log"
    if _, err := os.Stat(log_dir); os.IsNotExist(err) {
 		os.Mkdir(log_dir, 0644)
    }
-   file, err := os.OpenFile("./log/"+cfg.Log_file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+   file, err := os.OpenFile(log_dir+"/"+cfg.Log_file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
    if err != nil {
 		log.Fatal(err)
    }
@@ -307,72 +300,24 @@ func main() {
 
 // start programm dss
 
-=======
-///URLS
-<<<<<<< HEAD
-//url_auth := "https://stenddss.cryptopro.ru/skbkonturidp/oauth/token"
-//url_req := "https://stenddss.cryptopro.ru/skbkonturidp/confirmation"
-//client_id := ""
 
-url_auth := "https://stenddss.cryptopro.ru/a1idp/oauth/token"
-url_req := "https://stenddss.cryptopro.ru/a1idp/confirmation"
-
-client_id := ""
-
-
-//аргументы для запуска
-  var username string
-=======
-url_auth := "https://"
-url_req := "https://"
-client_id := "client"
-//аргументы для запуска
-  var msisdn string
->>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
-  var final bool
-  var errf bool
-//  var refid string
-//  var iserr bool
-// flag declaration
->>>>>>> d197204f645f71773d6cc823280f3a0157d2c1f5
   flag.StringVar(&username,"m","","Specify profile name.")
 
   flag.Parse()
   if len(os.Args) == 1 {
      fmt.Printf("Usage: \n")
-<<<<<<< HEAD
      fmt.Printf("./dssconfirm -m profile_name \n")
      exit_code = -1 
      os.Exit(exit_code)
   } else{
 //step 1 get token
 
-       token := CriptoAuth(username,url_auth,client_id)
-       if len(token)==0{
-          log.Printf(" step1. Token len: %v, token: %v \n", len(token), token)
-=======
-<<<<<<< HEAD
-     fmt.Printf("./dssconfirm -m profile_name \n")
-     exit_code = -1 
-     os.Exit(exit_code)
-  } else{
-       token := CriptoAuth(username,url_auth,client_id)
-=======
-     fmt.Printf("./dssconfirm -m msisdn \n")
-     exit_code = -1 
-     os.Exit(exit_code)
-  } else{
-       token := CriptoAuth(msisdn,url_auth,client_id)
->>>>>>> 7817ccb05ba9036137ba40370db74864350ae0b3
-       if len(token)==0{
-          fmt.Printf("Token len: %v, token: %v \n", len(token), token)
->>>>>>> d197204f645f71773d6cc823280f3a0157d2c1f5
-          exit_code = 1 
-          os.Exit(exit_code)
-       }
-       // подождем 3 секунды перед запросом
-       time.Sleep(3 * time.Second)
-<<<<<<< HEAD
+         token := CriptoAuth(username,url_auth,client_id)
+         if len(token)==0{
+                log.Printf(" step1. Token len: %v, token: %v \n", len(token), token)
+                exit_code = 1 
+                os.Exit(exit_code)
+        }
 //step 2 get refid
 
        refid, err := StartReq(token,url_req,client_id)
@@ -391,7 +336,7 @@ client_id := "client"
 
             final, errf = ResponseCheck(token,url_req,refid)
             log.Printf("i've got Final: %v , Error %v \n", final, errf)
-            if final==true &&errf == false{
+            if final==true && errf == false{
                break
                os.Exit(exit_code)
             }
@@ -401,22 +346,11 @@ client_id := "client"
                os.Exit(exit_code)
             }
             counter++
-=======
-       refid, err := StartReq(token,url_req,client_id)
-       fmt.Printf("i've got ref: %v, error %v \n", refid, err)
-       time.Sleep(3 * time.Second)
-       for {
-            time.Sleep(2 * time.Second)
-            final, errf = ResponseCheck(token,url_req,refid)
-            fmt.Printf("i've got Final: %v , Error %v \n", final, errf)
-            if final==true{
-               break
-               os.Exit(exit_code)
-            }
->>>>>>> d197204f645f71773d6cc823280f3a0157d2c1f5
+
        }
        //fmt.Printf("i've got final: %v , error %v \n", final, errf)
-  }
+      }
 
 
 }
+
